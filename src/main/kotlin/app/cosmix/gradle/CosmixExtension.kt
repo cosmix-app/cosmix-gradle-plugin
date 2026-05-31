@@ -105,7 +105,7 @@ abstract class CosmixExtension @Inject constructor(project: Project) {
 class ApkInfo(extension: CosmixExtension, release: String) {
     val cache = extension.userCache.resolve("cosmix")
     val jarFile = cache.resolve("cosmix.jar")
-    var urlPrefix = "https://github.com/cosmix/cosmix/releases/download/${release}"
+    var urlPrefix = "https://github.com/cosmix-app/cosmix/releases/download/${release}"
 }
 
 class Repo(val user: String, val repo: String, val url: String, val rawLinkFormat: String) {
