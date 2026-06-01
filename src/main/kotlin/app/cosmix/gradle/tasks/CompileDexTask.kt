@@ -103,7 +103,7 @@ abstract class CompileDexTask : DefaultTask() {
                         reader.accept(classNode, 0)
 
                         for (annotation in classNode.visibleAnnotations.orEmpty() + classNode.invisibleAnnotations.orEmpty()) {
-                            if (annotation.desc == "Lapp/cosmix/plugins/CosmixPlugin;") {
+                            if (annotation.desc == "Lcom/cosmix/app/plugins/CsxPluginAnnotation;") {
                                 require(detectedPluginClass == null) {
                                     "Only 1 active plugin class per project is supported"
                                 }
@@ -115,7 +115,7 @@ abstract class CompileDexTask : DefaultTask() {
 
                     val output = pluginClassFile.get().asFile
                     require(detectedPluginClass != null) {
-                        "No plugin class annotated with @CosmixPlugin was found"
+                        "No plugin class annotated with @CsxPluginAnnotation was found"
                     }
 
                     output.parentFile.mkdirs()
