@@ -11,6 +11,7 @@
 package app.cosmix.gradle.tasks
 
 import app.cosmix.gradle.entities.PluginManifest
+import app.cosmix.gradle.utils.network.FaviconFetcher
 import groovy.json.JsonBuilder
 import groovy.json.JsonGenerator
 import org.gradle.api.DefaultTask
@@ -51,10 +52,19 @@ abstract class GenerateManifestTask : DefaultTask() {
 
     @TaskAction
     fun generate() {
+        var finalIconUrl = iconUrl.orNull
+        if (finalIconUrl.isNullOrBlank()) {
+            val mainUrl = extractMainUrl()
+            if (mainUrl != null) {
+                finalIconUrl = FaviconFetcher.fetchFavicon(mainUrl)
+            }
+            if (finalIconUrl == null) finalIconUrl = ""
+        }
+
         val manifest = PluginManifest(
             name = pluginName.get(),
             version = pluginVersion.get().toString(),
-            iconUrl = iconUrl.orNull,
+            iconUrl = finalIconUrl,
             lang = lang.getOrElse("en"),
             hasMovies = true,
             hasSeries = true,
@@ -69,5 +79,23 @@ abstract class GenerateManifestTask : DefaultTask() {
                 JsonGenerator.Options().excludeNulls().build()
             ).toString()
         )
+    }
+
+    private fun extractMainUrl(): String? {
+        val buildFile = project.file("build.gradle.kts")
+        if (buildFile.exists()) {
+            val match = Regex("""mainUrl\s*=\s*"([^"]+)"""").find(buildFile.readText())
+            if (match != null) return match.groupValues[1]
+        }
+        
+        val srcDir = project.projectDir.resolve("src/main")
+        if (srcDir.exists()) {
+            val ktFiles = srcDir.walkTopDown().filter { it.isFile && it.extension == "kt" }
+            for (file in ktFiles) {
+                val match = Regex("""mainUrl\s*=\s*"([^"]+)"""").find(file.readText())
+                if (match != null) return match.groupValues[1]
+            }
+        }
+        return null
     }
 }
