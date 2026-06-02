@@ -81,14 +81,21 @@ abstract class GenerateManifestTask : DefaultTask() {
         )
     }
 
+    private fun getProjectDir(): java.io.File {
+        // outputFile is <projectDir>/build/intermediates/manifest.json
+        // Navigate up 3 levels to get the project directory without calling Task.project
+        return outputFile.get().asFile.parentFile.parentFile.parentFile
+    }
+
     private fun extractMainUrl(): String? {
-        val buildFile = project.file("build.gradle.kts")
+        val projDir = getProjectDir()
+        val buildFile = java.io.File(projDir, "build.gradle.kts")
         if (buildFile.exists()) {
             val match = Regex("""mainUrl\s*=\s*"([^"]+)"""").find(buildFile.readText())
             if (match != null) return match.groupValues[1]
         }
         
-        val srcDir = project.projectDir.resolve("src/main")
+        val srcDir = java.io.File(projDir, "src/main")
         if (srcDir.exists()) {
             val ktFiles = srcDir.walkTopDown().filter { it.isFile && it.extension == "kt" }
             for (file in ktFiles) {
