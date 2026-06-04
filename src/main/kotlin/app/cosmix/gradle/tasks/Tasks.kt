@@ -160,7 +160,7 @@ fun registerTasks(project: Project) {
 
         task.from(manifestFile)
         task.from(compileDex.flatMap { it.outputFile }) { copySpec ->
-            copySpec.rename { "android.dex" }
+            copySpec.rename { "classes.dex" }
         }
 
         task.from(compilePluginJar.flatMap { it.targetJarFile }) { copySpec ->
