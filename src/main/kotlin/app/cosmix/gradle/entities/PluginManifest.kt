@@ -19,5 +19,6 @@ data class PluginManifest(
     val hasSeries: Boolean,
     val hasAnime: Boolean,
     val hasLiveTV: Boolean,
-    val minCosmixVersion: Int
+    val minCosmixVersion: Int,
+    val pluginClassName: String
 )

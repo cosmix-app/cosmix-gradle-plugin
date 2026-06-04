@@ -70,7 +70,8 @@ abstract class GenerateManifestTask : DefaultTask() {
             hasSeries = true,
             hasAnime = false,
             hasLiveTV = false,
-            minCosmixVersion = 1
+            minCosmixVersion = 1,
+            pluginClassName = pluginClassFile.get().asFile.readText()
         )
 
         outputFile.asFile.get().writeText(
